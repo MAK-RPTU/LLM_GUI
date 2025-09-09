@@ -1,4 +1,6 @@
 # LLM_GUI
+ - NOTE: This is development branch. After verification merge to main branch
+
 This repository represents a GUI to monitor and control a robot and patient details.
 
 ## GUI
