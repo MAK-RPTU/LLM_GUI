@@ -128,3 +128,10 @@ demo.launch(
     server_name="192.168.0.109",
     allowed_paths=["C:/Users/MAK/Videos/Captures"]
 )
+
+# For public URL use share = true to connect on other devices from anywhere but it will expire after 1 week
+# demo.launch(
+#     server_name="192.168.0.109",
+#     allowed_paths=["C:/Users/MAK/Videos/Captures"],
+#     share=True
+# )
