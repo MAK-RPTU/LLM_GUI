@@ -79,5 +79,6 @@ ffmpeg -list_options true -f dshow -i video="HD Web Camera"
 
 ## References
 
-1. https://www.youtube.com/watch?v=rCZg2cVP4cs
-2. https://www.youtube.com/watch?v=fO8KVWl6I6g
+1. https://coderslegacy.com/ffmpeg-rtsp-streaming/
+2. https://www.youtube.com/watch?v=rCZg2cVP4cs
+3. https://www.youtube.com/watch?v=fO8KVWl6I6g
