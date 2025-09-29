@@ -45,6 +45,11 @@ OR for lower resolution
 ```bash
 ffmpeg -f dshow -video_size 640x320 -i video="HD Web Camera" -preset ultrafast -tune zerolatency -c:v libx264 -f mpegts udp://127.0.0.1:12345
 ```
+OR
+
+```bash
+ffmpeg -f dshow -i video="HD Web Camera" -preset ultrafast -tune zerolatency -c:v libx264 -f hls -hls_time 2 -hls_list_size 3 -hls_flags delete_segments ./stream/stream.m3u8
+```
 
 To Test in windows use VLC player and go to
 
@@ -59,10 +64,16 @@ e.g. <Add URL> replaced by `udp://@192.168.0.109:12345`
     ```bash
     ffmpeg -f dshow -i video="HD Web Camera" -c:v libx264 -preset veryfast -maxrate 3000k -bufsize 6000k -f rtsp rtsp://localhost:8554/webcam.sdp
     ```
-3. In order to view the strema run:
+3. In order to view the stream run:
     ```bash
     ffplay rtsp://localhost:8554/webcam.sdp
     ```
+
+### Option 3 : Using flask server
+
+1. `python -m pip install flask`
+
+
 
 ## Extra Utilties ffmpeg
 To list all the devices such as video (camera) and audio (microphone) use below command:
