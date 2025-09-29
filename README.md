@@ -12,6 +12,18 @@ This repository represents a GUI to monitor and control a robot and patient deta
 
     `OPENROUTER_API_KEY='<YOUR-KEY>'`
 
+- Option 1 : Activate the environment (Recommended)
+
+    `venv\Scripts\activate`
+
+- Option 2 : Create environment from scratch
+
+    `python -m venv venv`
+
+    `venv\Scripts\activate`
+
+    `python -m pip install -r requirements.txt`
+
 - Then run the `web_gui.py` script to get the server running and access to the web based GUI
 
 - ffmpeg is installed for streaming webcam online: Use below link and select windows Built by BtbN
@@ -86,6 +98,12 @@ To check format supported by each device
 
 ```bash
 ffmpeg -list_options true -f dshow -i video="HD Web Camera"  
+```
+
+To save the libraries into requirements.txt file:
+
+```bash
+python -m pip freeze > requirements.txt
 ```
 
 ## References
