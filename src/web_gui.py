@@ -4,7 +4,6 @@
 # main.py
 import gradio as gr
 from orchestrator import LLMOrchestrator
-from camera_stream import CameraStream
 from multiprocessing import Process
 import time
 from flask_camera import FlaskCameraServer
@@ -12,28 +11,6 @@ from flask_camera import FlaskCameraServer
 # Start Flask camera server in background
 camera_server = FlaskCameraServer(host="0.0.0.0", port=8000, camera_index=0)
 camera_server.run_in_background()
-
-# Camera config (main GUI process knows the URL)
-UDP_IP = "127.0.0.1"
-UDP_PORT = 12345
-CAMERA_STREAM_URL = f"udp://@{UDP_IP}:{UDP_PORT}"
-
-def start_camera():
-    from camera_stream import CameraStream
-    camera = CameraStream(
-        device_name="HD Web Camera",
-        resolution="640x320",
-        udp_ip=UDP_IP,
-        udp_port=UDP_PORT
-    )
-    camera.start()
-    # Keep process alive until terminated
-    try:
-        while True:
-            time.sleep(10)  # lighter loop, less CPU
-    except KeyboardInterrupt:
-        camera.stop()
-
 
 # Placeholder: Send commands to Isaac Sim
 def send_to_isaac(command_dict):
@@ -63,9 +40,7 @@ def execute_command(user_input, history):
 def get_camera_stream():
     # Placeholder: replace with Isaac Sim camera stream
     # return r"C:\Users\MAK\Videos\Captures\Characters_simulation_IsaacSim_Extension.mp4"
-    # return CAMERA_STREAM_URL
-    # return "http://192.168.0.109:8080/stream/stream.m3u8"
-    return "http://127.0.0.1:8080/stream/stream.m3u8"
+    return
 
 # -------------------------
 # EXTRA FEATURES FOR HOSPITAL ROBOT
@@ -128,53 +103,30 @@ with gr.Blocks() as demo:
 
         # Right column → Video + Task Queue + Safety + Log
         with gr.Column(scale=2):
+            # An example video component (non-interactive) replacing camera stream
             # video = gr.Video(value=get_camera_stream, label="Camera Stream", interactive=False)
-            # video = gr.Video(value=get_camera_stream(), label="Camera Stream", interactive=False)
-            # video = gr.HTML(
-            #     """
-            #     <video width="640" controls autoplay loop>
-            #         <source src="http://192.168.0.109:8080/stream/stream.m3u8" type="application/x-mpegURL">
-            #         Your browser does not support the video tag.
-            #     </video>
-            #     """
-            # )
-            # video = gr.HTML(
-            #     """
-            #     <video id="video" width="640" controls autoplay muted></video>
-            #     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-            #     <script>
-            #     if (Hls.isSupported()) {
-            #         var video = document.getElementById('video');
-            #         var hls = new Hls();
-            #         hls.loadSource('http://192.168.0.109:8080/stream/stream.m3u8');
-            #         hls.attachMedia(video);
-            #     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            #         video.src = 'http://192.168.0.109:8080/stream/stream.m3u8';
-            #     }
-            #     </script>
-            #     """
-            # )
 
-            # Embedded iframe with gray border and rounded corners
+            # Embedded iframe with gray border and rounded corners for camera stream
             video = gr.HTML(
                 """
                 <div style="
-                    border: 1px solid #1e1e1e;  // dark gray border
-                    border-radius: 10px; 
-                    padding: 5px; 
-                    background-color: #1e1e1e; 
+                    border: 1px solid #1e1e1e;
+                    border-radius: 10px;
+                    padding: 2px; /* thinner gap reduce it*/
+                    background-color: #1e1e1e;
                     display: inline-block;
+                    overflow: hidden; /* clip children */
                 ">
                     <iframe src="http://192.168.0.109:8000/video_feed"
-                            width="640" height="480" 
-                            style="border: none; border-radius: 5px;" 
+                            width="640" height="480"
+                            style="border: none; border-radius: 10px; display: block;"
                             allowfullscreen>
                     </iframe>
                 </div>
                 """
             )
 
-            # Full screen iframe
+            # Full screen iframe without borders
             # video = gr.HTML(
             #     """
             #     <iframe src="http://192.168.0.109:8000/video_feed"
@@ -212,21 +164,14 @@ with gr.Blocks() as demo:
             d_btn.click(fn=return_to_dock, outputs=system_log)
 
 if __name__ == "__main__":
-    # Start camera in a separate process
-    # camera_process = Process(target=start_camera, daemon=True)
-    # camera_process.start()
-    # camera = CameraStream(device_name="HD Web Camera", resolution="640x320",
-    #                     udp_ip=UDP_IP, udp_port=UDP_PORT)
-    # camera.start()
     # Launch app
     demo.launch(
-        server_name="192.168.0.109",
-        allowed_paths=["C:/Users/MAK/Videos/Captures"]
+        server_name="192.168.0.109"
     )
 
-# For public URL use share = true to connect on other devices from anywhere but it will expire after 1 week
-# demo.launch(
-#     server_name="192.168.0.109",
-#     allowed_paths=["C:/Users/MAK/Videos/Captures"],
-#     share=True
-# )
+    # For public URL use share = true to connect on other devices from anywhere but it will expire after 1 week
+    # Need to fix this while using webcam on local IP and grafana on public URL
+    # demo.launch(
+    #     server_name="192.168.0.109",
+    #     share=True
+    # )
